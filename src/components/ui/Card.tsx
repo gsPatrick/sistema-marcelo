@@ -11,7 +11,7 @@ export interface CardProps extends HTMLAttributes<HTMLDivElement> {
 const Card = forwardRef<HTMLDivElement, CardProps>(
     ({ className, variant = 'glass', padding = 'md', children, ...props }, ref) => {
         const variants = {
-            default: 'bg-white/5 border border-white/10',
+            default: 'bg-white border border-gray-200 shadow-sm',
             glass: 'glass-card',
         };
 

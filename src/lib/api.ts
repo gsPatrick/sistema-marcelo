@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 // Base API URL - conecta ao backend Node.js
-const API_BASE_URL = 'http://127.0.0.1:3002'; // Forçando IP local para evitar problemas de resolução e ENV
+// Base API URL - conecta ao backend Node.js
+const API_BASE_URL = 'https://geral-bot-medico-api.r954jc.easypanel.host'; // URL de Produção
 
 // Instância axios configurada
 const api = axios.create({

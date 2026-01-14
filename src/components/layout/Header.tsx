@@ -32,10 +32,10 @@ export function Header({ title = 'Dashboard', subtitle }: HeaderProps) {
     }, []);
 
     return (
-        <header className="h-16 bg-black border-b border-white/10 flex items-center justify-between px-6">
+        <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 z-40 relative">
             {/* Title */}
             <div>
-                <h1 className="text-xl font-semibold text-white">{title}</h1>
+                <h1 className="text-xl font-semibold text-gray-900">{title}</h1>
                 {subtitle && (
                     <p className="text-sm text-gray-500">{subtitle}</p>
                 )}
@@ -47,16 +47,17 @@ export function Header({ title = 'Dashboard', subtitle }: HeaderProps) {
                 <div className="hidden md:block w-64">
                     <Input
                         placeholder="Buscar contato..."
-                        icon={<Search className="w-4 h-4" />}
+                        icon={<Search className="w-4 h-4 text-gray-400" />}
+                        className="bg-gray-50 border-gray-200 text-gray-900 focus:bg-white transition-colors"
                     />
                 </div>
 
                 {/* Connection Status */}
-                <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium ${isChecking
-                        ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
-                        : isConnected
-                            ? 'bg-green-500/10 text-green-400 border border-green-500/20'
-                            : 'bg-red-500/10 text-red-400 border border-red-500/20'
+                <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium border ${isChecking
+                    ? 'bg-amber-50 text-amber-600 border-amber-200'
+                    : isConnected
+                        ? 'bg-green-50 text-green-600 border-green-200'
+                        : 'bg-red-50 text-red-600 border-red-200'
                     }`}>
                     {isChecking ? (
                         <>
@@ -77,9 +78,9 @@ export function Header({ title = 'Dashboard', subtitle }: HeaderProps) {
                 </div>
 
                 {/* Notifications */}
-                <button className="relative p-2 rounded-lg hover:bg-white/5 transition-colors">
-                    <Bell className="w-5 h-5 text-gray-400" />
-                    <span className="absolute top-1 right-1 w-2 h-2 bg-blue-500 rounded-full" />
+                <button className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                    <Bell className="w-5 h-5 text-gray-500" />
+                    <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full border-2 border-white" />
                 </button>
             </div>
         </header>

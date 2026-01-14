@@ -41,15 +41,15 @@ export function Sidebar() {
     const pathname = usePathname();
 
     return (
-        <aside className="fixed left-0 top-0 h-screen w-64 bg-black border-r border-white/10 flex flex-col z-50">
+        <aside className="fixed left-0 top-0 h-screen w-64 bg-white border-r border-gray-200 flex flex-col z-50">
             {/* Logo */}
-            <div className="p-6 border-b border-white/10">
+            <div className="p-6 border-b border-gray-100">
                 <Link href="/" className="flex items-center gap-3 group">
-                    <div className="w-10 h-10 rounded-xl bg-blue-500 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center shadow-md shadow-blue-200">
                         <Stethoscope className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                        <h1 className="text-lg font-bold text-white">Bot Médico</h1>
+                        <h1 className="text-lg font-bold text-gray-900">Bot Médico</h1>
                         <p className="text-xs text-gray-500">Triagem Inteligente</p>
                     </div>
                 </Link>
@@ -68,20 +68,20 @@ export function Sidebar() {
                             className={cn(
                                 'relative flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 group',
                                 isActive
-                                    ? 'text-white bg-white/10'
-                                    : 'text-gray-400 hover:text-white hover:bg-white/5'
+                                    ? 'text-blue-600 bg-blue-50'
+                                    : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
                             )}
                         >
                             {isActive && (
                                 <motion.div
                                     layoutId="sidebar-active"
-                                    className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-blue-500 rounded-r-full"
+                                    className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-blue-600 rounded-l-full"
                                     transition={{ type: 'spring', duration: 0.5 }}
                                 />
                             )}
                             <item.icon className={cn(
                                 'w-5 h-5 transition-colors',
-                                isActive ? 'text-blue-500' : 'text-gray-500 group-hover:text-white'
+                                isActive ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-600'
                             )} />
                             <span>{item.label}</span>
                         </Link>
@@ -90,8 +90,8 @@ export function Sidebar() {
             </nav>
 
             {/* Footer */}
-            <div className="p-4 border-t border-white/10">
-                <button className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-sm font-medium text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200">
+            <div className="p-4 border-t border-gray-100">
+                <button className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-sm font-medium text-gray-500 hover:text-red-500 hover:bg-red-50 transition-all duration-200">
                     <LogOut className="w-5 h-5" />
                     <span>Sair</span>
                 </button>
