@@ -10,6 +10,8 @@ import {
     deleteNotificationSetting,
     type NotificationSetting
 } from '@/lib/api';
+// Force reload of styles if needed or ensuring consistent styling
+import '@/app/globals.css';
 
 export default function SettingsPage() {
     const [settings, setSettings] = useState<NotificationSetting[]>([]);

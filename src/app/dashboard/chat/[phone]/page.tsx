@@ -169,40 +169,27 @@ export default function ChatPage() {
                         </div>
 
                         {/* Messages */}
-                        <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-black">
-                            {messages.map((message, index) => (
-                                <motion.div
-                                    key={message.id}
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.1 }}
-                                    className={`flex ${message.direction === 'out' ? 'justify-end' : 'justify-start'}`}
-                                >
-                                    <div className={`max-w-[70%] rounded-2xl px-4 py-2.5 ${message.direction === 'out'
-                                        ? 'bg-blue-600 text-white'
-                                        : 'bg-white/10 text-white/90'
-                                        } ${(message.message_type === 'button' || message.message_type === 'list') && message.direction === 'out' ? 'border-2 border-blue-400 bg-blue-900/50' : ''}`}>
+                        <div className="flex-1 overflow-y-auto p-4 space-y-2 bg-[#0b141a] bg-opacity-95"
+                            style={{
+                                backgroundImage: 'url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png")',
+                                backgroundBlendMode: 'overlay',
+                                backgroundRepeat: 'repeat',
+                                backgroundSize: '400px'
+                            }}>
+                            {messages.map((message, index) => {
+                                const nextMsg = messages[index + 1];
+                                const selectedOption = (message.message_type === 'button' && nextMsg && nextMsg.direction === 'in')
+                                    ? nextMsg.content
+                                    : null;
 
-                                        {/* Renderiza conteudo especial se for botão */}
-                                        {(message.message_type === 'button' || message.message_type === 'list') ? (
-                                            <div className="space-y-2">
-                                                <p className="text-sm font-medium border-b border-white/20 pb-2 mb-2">{message.content}</p>
-                                                <div className="flex flex-col gap-1 items-center opacity-70">
-                                                    <div className="w-full text-center py-1 bg-white/10 rounded text-xs text-blue-200">
-                                                        {message.message_type === 'button' ? 'Botões (WhatsApp)' : 'Lista de Opções'}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                                        )}
-
-                                        <p className="text-xs text-white/50 mt-1 text-right">
-                                            {new Date(message.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
-                                        </p>
-                                    </div>
-                                </motion.div>
-                            ))}
+                                return (
+                                    <MessageBubble
+                                        key={message.id}
+                                        message={message}
+                                        selectedOption={selectedOption}
+                                    />
+                                );
+                            })}
                             <div ref={messagesEndRef} />
                         </div>
 
@@ -289,5 +276,78 @@ function VariableCard({ icon, label, value }: VariableCardProps) {
                 <p className="text-sm text-white truncate">{value}</p>
             </div>
         </Card>
+    );
+}
+
+function MessageBubble({ message, selectedOption }: { message: Message; selectedOption: string | null }) {
+    const isOut = message.direction === 'out';
+    const hasButtons = message.metadata?.buttons && message.metadata.buttons.length > 0;
+
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className={`flex ${isOut ? 'justify-end' : 'justify-start'} group`}
+        >
+            <div className={`max-w-[85%] md:max-w-[65%] flex flex-col shadow-sm relative ${isOut ? 'items-end' : 'items-start'}`}>
+
+                {/* Bubble Content */}
+                <div className={`
+                    rounded-lg px-3 py-2 text-sm text-white relative shadow-sm
+                    ${isOut ? 'bg-[#005c4b] rounded-tr-none' : 'bg-[#202c33] rounded-tl-none'}
+                    ${hasButtons ? 'rounded-b-none border-b border-white/5' : ''}
+                `}>
+                    {/* Tail SVG for realism (Optional, but adds to "WhatsApp-like") */}
+                    {isOut ? (
+                        <svg viewBox="0 0 8 13" height="13" width="8" className="absolute top-0 -right-2 text-[#005c4b] fill-current">
+                            <path d="M5.188 1H0v11.193l6.467-8.625C7.526 2.156 6.958 1 5.188 1z"></path>
+                        </svg>
+                    ) : (
+                        <svg viewBox="0 0 8 13" height="13" width="8" className="absolute top-0 -left-2 text-[#202c33] fill-current scale-x-[-1]">
+                            <path d="M5.188 1H0v11.193l6.467-8.625C7.526 2.156 6.958 1 5.188 1z"></path>
+                        </svg>
+                    )}
+
+                    <p className="whitespace-pre-wrap leading-relaxed">
+                        {message.content}
+                    </p>
+
+                    <div className="flex items-center justify-end gap-1 mt-1 select-none">
+                        <span className="text-[11px] text-white/60">
+                            {new Date(message.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                        {isOut && (
+                            <span className="text-[#53bdeb]">
+                                <svg viewBox="0 0 16 15" width="16" height="15" className="fill-current w-3 h-3">
+                                    <path d="M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.879a.32.32 0 0 1-.484.033l-.358-.325a.319.319 0 0 0-.484.032l-.378.483a.418.418 0 0 0 .036.541l1.32 1.266c.143.14.361.125.473-.018l6.168-7.96a.417.417 0 0 0-.106-.541zm-3.051 6.568l-1.39-1.341a.365.365 0 0 0-.526 0l-.478.497a.418.418 0 0 0 0 .541l1.54 1.485c.13.126.33.125.464 0l.478-.456a.418.418 0 0 0 0-.541l-.088-.186z"></path>
+                                </svg>
+                            </span>
+                        )}
+                    </div>
+                </div>
+
+                {/* Buttons Attached Below */}
+                {hasButtons && message.metadata?.buttons && (
+                    <div className="w-full bg-[#202c33] bg-opacity-60 backdrop-blur-sm rounded-b-lg overflow-hidden flex flex-col mt-[1px]">
+                        {message.metadata.buttons.map((btn) => {
+                            const isSelected = selectedOption === btn.label;
+                            return (
+                                <div
+                                    key={btn.id}
+                                    className={`
+                                        px-4 py-3 text-center text-[15px] cursor-default border-t border-white/5 transition-colors
+                                        ${isSelected ? 'bg-[#005c4b]/30' : 'hover:bg-white/5'}
+                                    `}
+                                >
+                                    <span className={`font-medium ${isSelected ? 'text-green-400' : 'text-[#53bdeb]'}`}>
+                                        {isSelected && "✅ "} {btn.label}
+                                    </span>
+                                </div>
+                            );
+                        })}
+                    </div>
+                )}
+            </div>
+        </motion.div>
     );
 }

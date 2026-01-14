@@ -151,6 +151,10 @@ export interface Message {
     content: string;
     message_type: 'text' | 'button' | 'list' | 'image' | 'audio' | 'document' | 'location';
     node_id?: string;
+    metadata?: {
+        buttons?: Array<{ id: string; label: string }>;
+        [key: string]: any;
+    };
     created_at: string;
 }
 
