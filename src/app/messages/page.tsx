@@ -35,28 +35,29 @@ export default function MessagesPage() {
     );
 
     return (
-        <div className="min-h-screen bg-black">
+        <div className="min-h-screen bg-gray-50">
             <Sidebar />
 
             <main className="ml-64">
                 <Header title="Mensagens" subtitle={`${contacts.length} conversas ativas`} />
 
-                <div className="p-6">
+                <div className="p-6 max-w-4xl mx-auto">
                     {/* Search */}
                     <div className="mb-6">
                         <Input
                             placeholder="Buscar conversas..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            icon={<Search className="w-4 h-4" />}
+                            icon={<Search className="w-4 h-4 text-gray-400" />}
+                            className="bg-white border-gray-200 text-gray-900 focus:bg-white transition-colors shadow-sm"
                         />
                     </div>
 
                     {/* Conversations List */}
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                         {loading ? (
                             <div className="flex justify-center p-12">
-                                <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
+                                <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
                             </div>
                         ) : (
                             <>
@@ -68,23 +69,24 @@ export default function MessagesPage() {
                                         transition={{ delay: index * 0.05 }}
                                     >
                                         <Link href={`/dashboard/chat/${contact.phone}`}>
-                                            <Card className="hover:border-white/20 cursor-pointer">
+                                            <Card className="hover:border-blue-300 hover:shadow-md cursor-pointer transition-all duration-300 group bg-white border-gray-200 shadow-sm" variant="default">
                                                 <div className="flex items-center gap-4">
                                                     {/* Avatar */}
-                                                    <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-500 font-semibold">
+                                                    <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-lg border border-blue-50 group-hover:scale-105 transition-transform">
                                                         {contact.name ? contact.name[0].toUpperCase() : '?'}
                                                     </div>
 
                                                     {/* Info */}
                                                     <div className="flex-1 min-w-0">
                                                         <div className="flex items-center justify-between">
-                                                            <p className="font-medium text-white">{contact.name || 'Sem nome'}</p>
-                                                            <span className="text-xs text-gray-500 flex items-center gap-1">
+                                                            <p className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">{contact.name || 'Sem nome'}</p>
+                                                            <span className="text-xs text-gray-400 font-medium flex items-center gap-1 bg-gray-50 px-2 py-0.5 rounded-full border border-gray-100">
                                                                 <Clock className="w-3 h-3" />
                                                                 {contact.last_interaction_at ? new Date(contact.last_interaction_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : ''}
                                                             </span>
                                                         </div>
-                                                        <p className="text-sm text-gray-500 truncate mt-1">
+                                                        <p className="text-sm text-gray-500 truncate mt-1 flex items-center gap-1">
+                                                            <span className="font-medium text-gray-400">WhatsApp:</span>
                                                             {contact.phone}
                                                         </p>
                                                     </div>
@@ -95,9 +97,10 @@ export default function MessagesPage() {
                                 ))}
 
                                 {filteredContacts.length === 0 && (
-                                    <div className="text-center py-12 text-gray-500">
-                                        <MessageSquare className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                                        <p>Nenhuma conversa encontrada</p>
+                                    <div className="text-center py-16 bg-white rounded-xl border border-dashed border-gray-200">
+                                        <MessageSquare className="w-10 h-10 mx-auto mb-3 text-gray-300" />
+                                        <p className="text-gray-500 font-medium">Nenhuma conversa encontrada</p>
+                                        <p className="text-sm text-gray-400">Verifique os filtros ou aguarde novas mensagens.</p>
                                     </div>
                                 )}
                             </>

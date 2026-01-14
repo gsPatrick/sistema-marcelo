@@ -120,7 +120,7 @@ export default function ChatPage() {
     }
 
     return (
-        <div className="min-h-screen bg-black">
+        <div className="min-h-screen bg-gray-50">
             <Sidebar />
 
             <main className="ml-64">
@@ -131,11 +131,11 @@ export default function ChatPage() {
 
                 <div className="flex h-[calc(100vh-64px)]">
                     {/* Chat Area */}
-                    <div className="flex-1 flex flex-col">
+                    <div className="flex-1 flex flex-col relative z-0">
                         {/* Chat Header */}
-                        <div className="p-4 border-b border-white/10 flex items-center gap-4 bg-black">
+                        <div className="p-4 border-b border-gray-200 flex items-center gap-4 bg-white shadow-sm z-10">
                             <Link href="/dashboard">
-                                <Button variant="ghost" size="sm">
+                                <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900 hover:bg-gray-100">
                                     <ArrowLeft className="w-4 h-4 mr-2" />
                                     Voltar
                                 </Button>
@@ -143,7 +143,7 @@ export default function ChatPage() {
 
                             <div className="flex-1">
                                 <div className="flex items-center gap-2">
-                                    <span className="font-medium text-white">{contact.name || 'Sem nome'}</span>
+                                    <span className="font-bold text-gray-900">{contact.name || 'Sem nome'}</span>
                                     <Badge variant={(contact.status === 'HUMAN' ? 'disqualified' : contact.status.toLowerCase()) as any}>
                                         {contact.status === 'HUMAN' ? 'Bot Offline' : getStatusLabel(contact.status)}
                                     </Badge>
@@ -156,20 +156,20 @@ export default function ChatPage() {
                                         size="sm"
                                         onClick={handleReactivate}
                                         disabled={reactivating}
-                                        className="bg-green-600 hover:bg-green-700 text-white"
+                                        className="bg-green-600 hover:bg-green-700 text-white shadow-sm"
                                     >
                                         {reactivating ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Stethoscope className="w-4 h-4 mr-2" />}
                                         Reativar Bot
                                     </Button>
                                 )}
-                                <Button variant="secondary" size="sm">
+                                <Button variant="secondary" size="sm" className="bg-gray-100 hover:bg-gray-200 text-gray-700">
                                     Finalizar
                                 </Button>
                             </div>
                         </div>
 
-                        {/* Messages */}
-                        <div className="flex-1 overflow-y-auto p-4 space-y-2 bg-[#0b141a] bg-opacity-95"
+                        {/* Messages Area - WhatsApp Light Background */}
+                        <div className="flex-1 overflow-y-auto p-4 space-y-2 bg-[#efeae2]"
                             style={{
                                 backgroundImage: 'url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png")',
                                 backgroundBlendMode: 'overlay',
@@ -194,17 +194,21 @@ export default function ChatPage() {
                         </div>
 
                         {/* Input Area */}
-                        <div className="p-4 border-t border-white/10 bg-black">
+                        <div className="p-4 border-t border-gray-200 bg-white shadow-[0_-1px_5px_rgba(0,0,0,0.05)] z-10">
                             <div className="flex gap-3">
                                 <Input
                                     placeholder="Digite sua mensagem..."
                                     value={newMessage}
                                     onChange={(e) => setNewMessage(e.target.value)}
                                     onKeyDown={handleKeyDown}
-                                    className="flex-1"
+                                    className="flex-1 bg-gray-50 border-gray-200 focus:bg-white transition-colors text-gray-900"
                                     disabled={sending}
                                 />
-                                <Button onClick={handleSend} disabled={!newMessage.trim() || sending}>
+                                <Button
+                                    onClick={handleSend}
+                                    disabled={!newMessage.trim() || sending}
+                                    className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm"
+                                >
                                     {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                                 </Button>
                             </div>
@@ -212,27 +216,34 @@ export default function ChatPage() {
                     </div>
 
                     {/* Right Panel - Contact Info */}
-                    <aside className="w-80 border-l border-white/10 p-4 overflow-y-auto bg-black">
-                        <h3 className="text-sm font-semibold text-white mb-4">Resumo da Triagem</h3>
+                    <aside className="w-80 border-l border-gray-200 p-6 overflow-y-auto bg-white">
+                        <h3 className="text-sm font-bold text-gray-900 mb-6 flex items-center gap-2">
+                            <Target className="w-4 h-4 text-blue-600" />
+                            Resumo da Triagem
+                        </h3>
 
                         {/* Tags */}
-                        <div className="mb-6">
-                            <p className="text-xs text-gray-500 mb-2 flex items-center gap-1">
+                        <div className="mb-8">
+                            <p className="text-xs font-semibold text-gray-500 mb-3 uppercase tracking-wider flex items-center gap-1">
                                 <Tag className="w-3 h-3" />
                                 Tags
                             </p>
-                            <div className="flex flex-wrap gap-1">
+                            <div className="flex flex-wrap gap-2">
                                 {contact.tags?.map((tag) => (
-                                    <Badge key={tag} variant="premium">{tag}</Badge>
+                                    <Badge key={tag} variant="premium" className="bg-blue-50 text-blue-700 border-blue-100 px-3 py-1">
+                                        {tag}
+                                    </Badge>
                                 ))}
                                 {(!contact.tags || contact.tags.length === 0) && (
-                                    <span className="text-xs text-gray-600">Sem tags</span>
+                                    <span className="text-sm text-gray-400 italic">Sem tags</span>
                                 )}
                             </div>
                         </div>
 
                         {/* Variables */}
-                        <div className="space-y-3">
+                        <div className="space-y-4">
+                            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Dados Coletados</p>
+
                             {Object.entries(contact.variables || {}).map(([key, value]) => {
                                 // Ignora variaveis internas longas ou json
                                 if (typeof value !== 'string') return null;
@@ -247,11 +258,9 @@ export default function ChatPage() {
                             })}
 
                             {(!contact.variables || Object.keys(contact.variables).length === 0) && (
-                                <span className="text-xs text-gray-600">Nenhuma variável coletada</span>
+                                <span className="text-sm text-gray-400 italic">Nenhuma variável coletada</span>
                             )}
                         </div>
-
-                        {/* Actions Removed: Ligar para paciente */}
                     </aside>
                 </div>
             </main>
@@ -269,11 +278,11 @@ function VariableCard({ icon, label, value }: VariableCardProps) {
     if (!value) return null;
 
     return (
-        <Card padding="sm" className="flex items-center gap-3">
-            <div className="text-blue-500">{icon}</div>
+        <Card padding="md" className="flex items-start gap-3 bg-gray-50 border-gray-100 shadow-sm" variant="default">
+            <div className="text-blue-600 mt-0.5">{icon}</div>
             <div className="flex-1 min-w-0">
-                <p className="text-xs text-gray-500">{label}</p>
-                <p className="text-sm text-white truncate">{value}</p>
+                <p className="text-xs font-medium text-gray-500 mb-0.5">{label}</p>
+                <p className="text-sm font-semibold text-gray-900 break-words leading-relaxed">{value}</p>
             </div>
         </Card>
     );
@@ -287,37 +296,38 @@ function MessageBubble({ message, selectedOption }: { message: Message; selected
         <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className={`flex ${isOut ? 'justify-end' : 'justify-start'} group`}
+            className={`flex ${isOut ? 'justify-end' : 'justify-start'} group mb-1`}
         >
             <div className={`max-w-[85%] md:max-w-[65%] flex flex-col shadow-sm relative ${isOut ? 'items-end' : 'items-start'}`}>
 
                 {/* Bubble Content */}
                 <div className={`
-                    rounded-lg px-3 py-2 text-sm text-white relative shadow-sm
-                    ${isOut ? 'bg-[#005c4b] rounded-tr-none' : 'bg-[#202c33] rounded-tl-none'}
-                    ${hasButtons ? 'rounded-b-none border-b border-white/5' : ''}
+                    rounded-lg px-3 py-1.5 text-[14.2px] text-gray-900 relative shadow-[0_1px_0.5px_rgba(0,0,0,0.13)]
+                    ${isOut ? 'bg-[#d9fdd3] rounded-tr-none' : 'bg-white rounded-tl-none'}
+                    ${hasButtons ? 'rounded-b-none border-b border-gray-100' : ''}
                 `}>
-                    {/* Tail SVG for realism (Optional, but adds to "WhatsApp-like") */}
+                    {/* Tail SVG for realism */}
                     {isOut ? (
-                        <svg viewBox="0 0 8 13" height="13" width="8" className="absolute top-0 -right-2 text-[#005c4b] fill-current">
+                        <svg viewBox="0 0 8 13" height="13" width="8" className="absolute top-0 -right-2 text-[#d9fdd3] fill-current">
                             <path d="M5.188 1H0v11.193l6.467-8.625C7.526 2.156 6.958 1 5.188 1z"></path>
                         </svg>
                     ) : (
-                        <svg viewBox="0 0 8 13" height="13" width="8" className="absolute top-0 -left-2 text-[#202c33] fill-current scale-x-[-1]">
+                        <svg viewBox="0 0 8 13" height="13" width="8" className="absolute top-0 -left-2 text-white fill-current scale-x-[-1]">
                             <path d="M5.188 1H0v11.193l6.467-8.625C7.526 2.156 6.958 1 5.188 1z"></path>
                         </svg>
                     )}
 
-                    <p className="whitespace-pre-wrap leading-relaxed">
+                    <p className="whitespace-pre-wrap leading-relaxed relative z-10">
                         {message.content}
                     </p>
 
-                    <div className="flex items-center justify-end gap-1 mt-1 select-none">
-                        <span className="text-[11px] text-white/60">
+                    <div className="flex items-center justify-end gap-1 mt-0.5 select-none relative z-10 opacity-70">
+                        <span className="text-[10px] text-gray-500 font-medium">
                             {new Date(message.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                         </span>
                         {isOut && (
-                            <span className="text-[#53bdeb]">
+                            <span className="text-blue-500">
+                                {/* Double check icon */}
                                 <svg viewBox="0 0 16 15" width="16" height="15" className="fill-current w-3 h-3">
                                     <path d="M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.879a.32.32 0 0 1-.484.033l-.358-.325a.319.319 0 0 0-.484.032l-.378.483a.418.418 0 0 0 .036.541l1.32 1.266c.143.14.361.125.473-.018l6.168-7.96a.417.417 0 0 0-.106-.541zm-3.051 6.568l-1.39-1.341a.365.365 0 0 0-.526 0l-.478.497a.418.418 0 0 0 0 .541l1.54 1.485c.13.126.33.125.464 0l.478-.456a.418.418 0 0 0 0-.541l-.088-.186z"></path>
                                 </svg>
@@ -328,18 +338,18 @@ function MessageBubble({ message, selectedOption }: { message: Message; selected
 
                 {/* Buttons Attached Below */}
                 {hasButtons && message.metadata?.buttons && (
-                    <div className="w-full bg-[#202c33] bg-opacity-60 backdrop-blur-sm rounded-b-lg overflow-hidden flex flex-col mt-[1px]">
+                    <div className="w-full bg-white rounded-b-lg overflow-hidden flex flex-col mt-[1px] shadow-[0_1px_2px_rgba(0,0,0,0.1)]">
                         {message.metadata.buttons.map((btn) => {
                             const isSelected = selectedOption === btn.label;
                             return (
                                 <div
                                     key={btn.id}
                                     className={`
-                                        px-4 py-3 text-center text-[15px] cursor-default border-t border-white/5 transition-colors
-                                        ${isSelected ? 'bg-[#005c4b]/30' : 'hover:bg-white/5'}
+                                        px-4 py-3 text-center text-[15px] cursor-default border-t border-gray-100 transition-colors font-medium
+                                        ${isSelected ? 'bg-green-50 text-green-700' : 'text-blue-500 hover:bg-gray-50'}
                                     `}
                                 >
-                                    <span className={`font-medium ${isSelected ? 'text-green-400' : 'text-[#53bdeb]'}`}>
+                                    <span>
                                         {isSelected && "✅ "} {btn.label}
                                     </span>
                                 </div>
