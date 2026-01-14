@@ -169,28 +169,36 @@ export default function ChatPage() {
                         </div>
 
                         {/* Messages Area - WhatsApp Light Background */}
-                        <div className="flex-1 overflow-y-auto p-4 space-y-2 bg-[#efeae2]"
-                            style={{
-                                backgroundImage: 'url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png")',
-                                backgroundBlendMode: 'overlay',
-                                backgroundRepeat: 'repeat',
-                                backgroundSize: '400px'
-                            }}>
-                            {messages.map((message, index) => {
-                                const nextMsg = messages[index + 1];
-                                const selectedOption = (message.message_type === 'button' && nextMsg && nextMsg.direction === 'in')
-                                    ? nextMsg.content
-                                    : null;
+                        <div className="flex-1 overflow-y-auto p-4 space-y-2 bg-[#efeae2] relative" id="chat-container">
+                            {/* Background Pattern with Opacity */}
+                            <div
+                                className="absolute inset-0 pointer-events-none opacity-[0.4]"
+                                style={{
+                                    backgroundImage: 'url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png")',
+                                    backgroundRepeat: 'repeat',
+                                    backgroundSize: 'contain', // or 400px
+                                    backgroundPosition: 'center'
+                                }}
+                            />
 
-                                return (
-                                    <MessageBubble
-                                        key={message.id}
-                                        message={message}
-                                        selectedOption={selectedOption}
-                                    />
-                                );
-                            })}
-                            <div ref={messagesEndRef} />
+                            {/* Messages Content - Relative to appear above background */}
+                            <div className="relative z-10 space-y-2">
+                                {messages.map((message, index) => {
+                                    const nextMsg = messages[index + 1];
+                                    const selectedOption = (message.message_type === 'button' && nextMsg && nextMsg.direction === 'in')
+                                        ? nextMsg.content
+                                        : null;
+
+                                    return (
+                                        <MessageBubble
+                                            key={message.id}
+                                            message={message}
+                                            selectedOption={selectedOption}
+                                        />
+                                    );
+                                })}
+                                <div ref={messagesEndRef} />
+                            </div>
                         </div>
 
                         {/* Input Area */}
