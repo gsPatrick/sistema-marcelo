@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Send, Phone, MapPin, Target, CreditCard, Stethoscope, Tag, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { Sidebar, Header } from '@/components/layout';
+import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { Card, Badge, Button, Input } from '@/components/ui';
 import { formatPhone, getStatusLabel } from '@/lib/utils';
 import { getContact, getMessages, sendMessage, reactivateContact, type Contact, type Message } from '@/lib/api';
@@ -120,159 +120,153 @@ export default function ChatPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            <Sidebar />
+        <DashboardLayout
+            title={contact.name || 'Chat'}
+            subtitle={formatPhone(phone)}
+        >
+            <div className="flex h-[calc(100vh-64px)] overflow-hidden">
+                {/* Chat Area */}
+                <div className="flex-1 flex flex-col relative z-0 min-w-0">
+                    {/* Chat Header */}
+                    <div className="p-4 border-b border-gray-200 flex items-center gap-4 bg-white shadow-sm z-10 flex-wrap">
+                        <Link href="/dashboard">
+                            <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900 hover:bg-gray-100">
+                                <ArrowLeft className="w-4 h-4 mr-2" />
+                                Voltar
+                            </Button>
+                        </Link>
 
-            <main className="ml-64">
-                <Header
-                    title={contact.name || 'Chat'}
-                    subtitle={formatPhone(phone)}
-                />
-
-                <div className="flex h-[calc(100vh-64px)]">
-                    {/* Chat Area */}
-                    <div className="flex-1 flex flex-col relative z-0">
-                        {/* Chat Header */}
-                        <div className="p-4 border-b border-gray-200 flex items-center gap-4 bg-white shadow-sm z-10">
-                            <Link href="/dashboard">
-                                <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900 hover:bg-gray-100">
-                                    <ArrowLeft className="w-4 h-4 mr-2" />
-                                    Voltar
-                                </Button>
-                            </Link>
-
-                            <div className="flex-1">
-                                <div className="flex items-center gap-2">
-                                    <span className="font-bold text-gray-900">{contact.name || 'Sem nome'}</span>
-                                    <Badge variant={(contact.status === 'HUMAN' ? 'disqualified' : contact.status.toLowerCase()) as any}>
-                                        {contact.status === 'HUMAN' ? 'Bot Offline' : getStatusLabel(contact.status)}
-                                    </Badge>
-                                </div>
-                            </div>
-
-                            <div className="flex gap-2">
-                                {contact.status === 'HUMAN' && (
-                                    <Button
-                                        size="sm"
-                                        onClick={handleReactivate}
-                                        disabled={reactivating}
-                                        className="bg-green-600 hover:bg-green-700 text-white shadow-sm"
-                                    >
-                                        {reactivating ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Stethoscope className="w-4 h-4 mr-2" />}
-                                        Reativar Bot
-                                    </Button>
-                                )}
-                                <Button variant="secondary" size="sm" className="bg-gray-100 hover:bg-gray-200 text-gray-700">
-                                    Finalizar
-                                </Button>
+                        <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                                <span className="font-bold text-gray-900 truncate">{contact.name || 'Sem nome'}</span>
+                                <Badge variant={(contact.status === 'HUMAN' ? 'disqualified' : contact.status.toLowerCase()) as any}>
+                                    {contact.status === 'HUMAN' ? 'Bot Offline' : getStatusLabel(contact.status)}
+                                </Badge>
                             </div>
                         </div>
 
-                        {/* Messages Area - WhatsApp Light Background */}
-                        <div className="flex-1 overflow-y-auto p-4 space-y-2 bg-[#efeae2] relative" id="chat-container">
-                            {/* Background Pattern with Opacity */}
-                            <div
-                                className="absolute inset-0 pointer-events-none opacity-[0.4]"
-                                style={{
-                                    backgroundImage: 'url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png")',
-                                    backgroundRepeat: 'repeat',
-                                    backgroundSize: 'contain', // or 400px
-                                    backgroundPosition: 'center'
-                                }}
-                            />
-
-                            {/* Messages Content - Relative to appear above background */}
-                            <div className="relative z-10 space-y-2">
-                                {messages.map((message, index) => {
-                                    const nextMsg = messages[index + 1];
-                                    const selectedOption = (message.message_type === 'button' && nextMsg && nextMsg.direction === 'in')
-                                        ? nextMsg.content
-                                        : null;
-
-                                    return (
-                                        <MessageBubble
-                                            key={message.id}
-                                            message={message}
-                                            selectedOption={selectedOption}
-                                        />
-                                    );
-                                })}
-                                <div ref={messagesEndRef} />
-                            </div>
-                        </div>
-
-                        {/* Input Area */}
-                        <div className="p-4 border-t border-gray-200 bg-white shadow-[0_-1px_5px_rgba(0,0,0,0.05)] z-10">
-                            <div className="flex gap-3">
-                                <Input
-                                    placeholder="Digite sua mensagem..."
-                                    value={newMessage}
-                                    onChange={(e) => setNewMessage(e.target.value)}
-                                    onKeyDown={handleKeyDown}
-                                    className="flex-1 bg-gray-50 border-gray-200 focus:bg-white transition-colors text-gray-900"
-                                    disabled={sending}
-                                />
+                        <div className="flex gap-2">
+                            {contact.status === 'HUMAN' && (
                                 <Button
-                                    onClick={handleSend}
-                                    disabled={!newMessage.trim() || sending}
-                                    className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm"
+                                    size="sm"
+                                    onClick={handleReactivate}
+                                    disabled={reactivating}
+                                    className="bg-green-600 hover:bg-green-700 text-white shadow-sm"
                                 >
-                                    {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                                    {reactivating ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Stethoscope className="w-4 h-4 mr-2" />}
+                                    <span className="hidden sm:inline">Reativar Bot</span>
                                 </Button>
-                            </div>
+                            )}
+                            <Button variant="secondary" size="sm" className="bg-gray-100 hover:bg-gray-200 text-gray-700">
+                                <span className="hidden sm:inline">Finalizar</span>
+                                <span className="sm:hidden">Fin.</span>
+                            </Button>
                         </div>
                     </div>
 
-                    {/* Right Panel - Contact Info */}
-                    <aside className="w-80 border-l border-gray-200 p-6 overflow-y-auto bg-white">
-                        <h3 className="text-sm font-bold text-gray-900 mb-6 flex items-center gap-2">
-                            <Target className="w-4 h-4 text-blue-600" />
-                            Resumo da Triagem
-                        </h3>
+                    {/* Messages Area - WhatsApp Light Background */}
+                    <div className="flex-1 overflow-y-auto p-4 space-y-2 bg-[#efeae2] relative scroll-smooth" id="chat-container">
+                        {/* Background Pattern with Opacity */}
+                        <div
+                            className="absolute inset-0 pointer-events-none opacity-[0.4]"
+                            style={{
+                                backgroundImage: 'url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png")',
+                                backgroundRepeat: 'repeat',
+                                backgroundSize: 'contain',
+                                backgroundPosition: 'center'
+                            }}
+                        />
 
-                        {/* Tags */}
-                        <div className="mb-8">
-                            <p className="text-xs font-semibold text-gray-500 mb-3 uppercase tracking-wider flex items-center gap-1">
-                                <Tag className="w-3 h-3" />
-                                Tags
-                            </p>
-                            <div className="flex flex-wrap gap-2">
-                                {contact.tags?.map((tag) => (
-                                    <Badge key={tag} variant="premium" className="bg-blue-50 text-blue-700 border-blue-100 px-3 py-1">
-                                        {tag}
-                                    </Badge>
-                                ))}
-                                {(!contact.tags || contact.tags.length === 0) && (
-                                    <span className="text-sm text-gray-400 italic">Sem tags</span>
-                                )}
-                            </div>
-                        </div>
+                        {/* Messages Content */}
+                        <div className="relative z-10 space-y-2 pb-4">
+                            {messages.map((message, index) => {
+                                const nextMsg = messages[index + 1];
+                                const selectedOption = (message.message_type === 'button' && nextMsg && nextMsg.direction === 'in')
+                                    ? nextMsg.content
+                                    : null;
 
-                        {/* Variables */}
-                        <div className="space-y-4">
-                            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Dados Coletados</p>
-
-                            {Object.entries(contact.variables || {}).map(([key, value]) => {
-                                // Ignora variaveis internas longas ou json
-                                if (typeof value !== 'string') return null;
                                 return (
-                                    <VariableCard
-                                        key={key}
-                                        icon={<Target className="w-4 h-4" />} // Generic icon
-                                        label={key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                                        value={value}
+                                    <MessageBubble
+                                        key={message.id}
+                                        message={message}
+                                        selectedOption={selectedOption}
                                     />
-                                )
+                                );
                             })}
+                            <div ref={messagesEndRef} />
+                        </div>
+                    </div>
 
-                            {(!contact.variables || Object.keys(contact.variables).length === 0) && (
-                                <span className="text-sm text-gray-400 italic">Nenhuma variável coletada</span>
+                    {/* Input Area */}
+                    <div className="p-4 border-t border-gray-200 bg-white shadow-[0_-1px_5px_rgba(0,0,0,0.05)] z-10">
+                        <div className="flex gap-3">
+                            <Input
+                                placeholder="Digite sua mensagem..."
+                                value={newMessage}
+                                onChange={(e) => setNewMessage(e.target.value)}
+                                onKeyDown={handleKeyDown}
+                                className="flex-1 bg-gray-50 border-gray-200 focus:bg-white transition-colors text-gray-900"
+                                disabled={sending}
+                            />
+                            <Button
+                                onClick={handleSend}
+                                disabled={!newMessage.trim() || sending}
+                                className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm"
+                            >
+                                {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Right Panel - Contact Info - Hidden on Mobile */}
+                <aside className="hidden lg:block w-80 border-l border-gray-200 p-6 overflow-y-auto bg-white flex-shrink-0">
+                    <h3 className="text-sm font-bold text-gray-900 mb-6 flex items-center gap-2">
+                        <Target className="w-4 h-4 text-blue-600" />
+                        Resumo da Triagem
+                    </h3>
+
+                    {/* Tags */}
+                    <div className="mb-8">
+                        <p className="text-xs font-semibold text-gray-500 mb-3 uppercase tracking-wider flex items-center gap-1">
+                            <Tag className="w-3 h-3" />
+                            Tags
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                            {contact.tags?.map((tag) => (
+                                <Badge key={tag} variant="premium" className="bg-blue-50 text-blue-700 border-blue-100 px-3 py-1">
+                                    {tag}
+                                </Badge>
+                            ))}
+                            {(!contact.tags || contact.tags.length === 0) && (
+                                <span className="text-sm text-gray-400 italic">Sem tags</span>
                             )}
                         </div>
-                    </aside>
-                </div>
-            </main>
-        </div>
+                    </div>
+
+                    {/* Variables */}
+                    <div className="space-y-4">
+                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Dados Coletados</p>
+
+                        {Object.entries(contact.variables || {}).map(([key, value]) => {
+                            if (typeof value !== 'string') return null;
+                            return (
+                                <VariableCard
+                                    key={key}
+                                    icon={<Target className="w-4 h-4" />}
+                                    label={key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                    value={value}
+                                />
+                            )
+                        })}
+
+                        {(!contact.variables || Object.keys(contact.variables).length === 0) && (
+                            <span className="text-sm text-gray-400 italic">Nenhuma variável coletada</span>
+                        )}
+                    </div>
+                </aside>
+            </div>
+        </DashboardLayout>
     );
 }
 

@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, Clock, CheckCircle, XCircle, Phone } from 'lucide-react';
 import Link from 'next/link';
-import { Sidebar, Header } from '@/components/layout';
+import { Header } from '@/components/layout';
+import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { Card, Badge } from '@/components/ui';
 import { formatPhone, getStatusLabel } from '@/lib/utils';
 import { getContacts, type Contact } from '@/lib/api';
@@ -51,146 +52,140 @@ export default function DashboardPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            <Sidebar />
+        <DashboardLayout
+            title="Dashboard"
+            subtitle={`${contacts.length} contatos no sistema`}
+        >
+            <div className="p-4 md:p-6 max-w-7xl mx-auto">
+                {/* Stats Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                    <StatsCard
+                        icon={<Clock className="w-5 h-5" />}
+                        label="Aguardando"
+                        value={stats.pending}
+                        color="text-amber-600"
+                        bgColor="bg-amber-100"
+                    />
+                    <StatsCard
+                        icon={<Users className="w-5 h-5" />}
+                        label="Em Triagem"
+                        value={stats.bot}
+                        color="text-blue-600"
+                        bgColor="bg-blue-100"
+                    />
+                    <StatsCard
+                        icon={<CheckCircle className="w-5 h-5" />}
+                        label="Finalizados"
+                        value={stats.finished}
+                        color="text-green-600"
+                        bgColor="bg-green-100"
+                    />
+                    <StatsCard
+                        icon={<XCircle className="w-5 h-5" />}
+                        label="Descartados"
+                        value={stats.disqualified}
+                        color="text-red-600"
+                        bgColor="bg-red-100"
+                    />
+                </div>
 
-            <main className="ml-64">
-                <Header
-                    title="Dashboard"
-                    subtitle={`${contacts.length} contatos no sistema`}
-                />
+                {/* Bot Offline Widget - Shows contacts in HUMAN status */}
+                <div className="mb-8 p-6 rounded-2xl bg-white border border-red-100 shadow-sm relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-red-50 rounded-full -translate-y-1/2 translate-x-1/2 opacity-50" />
 
-                <div className="p-6 max-w-7xl mx-auto">
-                    {/* Stats Cards */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                        <StatsCard
-                            icon={<Clock className="w-5 h-5" />}
-                            label="Aguardando"
-                            value={stats.pending}
-                            color="text-amber-600"
-                            bgColor="bg-amber-100"
-                        />
-                        <StatsCard
-                            icon={<Users className="w-5 h-5" />}
-                            label="Em Triagem"
-                            value={stats.bot}
-                            color="text-blue-600"
-                            bgColor="bg-blue-100"
-                        />
-                        <StatsCard
-                            icon={<CheckCircle className="w-5 h-5" />}
-                            label="Finalizados"
-                            value={stats.finished}
-                            color="text-green-600"
-                            bgColor="bg-green-100"
-                        />
-                        <StatsCard
-                            icon={<XCircle className="w-5 h-5" />}
-                            label="Descartados"
-                            value={stats.disqualified}
-                            color="text-red-600"
-                            bgColor="bg-red-100"
-                        />
-                    </div>
+                    <h3 className="text-gray-900 font-bold mb-4 flex items-center gap-2 relative z-10">
+                        <div className={`w-2.5 h-2.5 rounded-full ${contacts.some(c => c.status === 'HUMAN') ? 'bg-red-500 animate-pulse shadow-lg shadow-red-200' : 'bg-gray-300'}`} />
+                        Bot Desligado / Atendimento Humano
+                    </h3>
 
-                    {/* Bot Offline Widget - Shows contacts in HUMAN status */}
-                    <div className="mb-8 p-6 rounded-2xl bg-white border border-red-100 shadow-sm relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-red-50 rounded-full -translate-y-1/2 translate-x-1/2 opacity-50" />
-
-                        <h3 className="text-gray-900 font-bold mb-4 flex items-center gap-2 relative z-10">
-                            <div className={`w-2.5 h-2.5 rounded-full ${contacts.some(c => c.status === 'HUMAN') ? 'bg-red-500 animate-pulse shadow-lg shadow-red-200' : 'bg-gray-300'}`} />
-                            Bot Desligado / Atendimento Humano
-                        </h3>
-
-                        {contacts.filter(c => c.status === 'HUMAN').length > 0 ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 relative z-10">
-                                {contacts.filter(c => c.status === 'HUMAN').map(contact => (
-                                    <Link key={contact.phone} href={`/dashboard/chat/${contact.phone}`}>
-                                        <div className="bg-red-50 border border-red-100 rounded-xl p-4 flex items-center justify-between hover:border-red-200 hover:shadow-md transition-all cursor-pointer group">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-red-500 shadow-sm">
-                                                    <Users className="w-5 h-5" />
-                                                </div>
-                                                <div>
-                                                    <p className="font-bold text-gray-900">{contact.name || 'Sem nome'}</p>
-                                                    <p className="text-xs text-red-600 flex items-center gap-1 font-medium">
-                                                        <Phone className="w-3 h-3" />
-                                                        {formatPhone(contact.phone)}
-                                                    </p>
-                                                </div>
+                    {contacts.filter(c => c.status === 'HUMAN').length > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 relative z-10">
+                            {contacts.filter(c => c.status === 'HUMAN').map(contact => (
+                                <Link key={contact.phone} href={`/dashboard/chat/${contact.phone}`}>
+                                    <div className="bg-red-50 border border-red-100 rounded-xl p-4 flex items-center justify-between hover:border-red-200 hover:shadow-md transition-all cursor-pointer group">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-red-500 shadow-sm">
+                                                <Users className="w-5 h-5" />
                                             </div>
-                                            <div className="px-3 py-1 rounded-full bg-white text-xs font-bold text-red-600 border border-red-100 group-hover:bg-red-600 group-hover:text-white group-hover:border-red-600 transition-colors">
-                                                Reativar
+                                            <div>
+                                                <p className="font-bold text-gray-900">{contact.name || 'Sem nome'}</p>
+                                                <p className="text-xs text-red-600 flex items-center gap-1 font-medium">
+                                                    <Phone className="w-3 h-3" />
+                                                    {formatPhone(contact.phone)}
+                                                </p>
                                             </div>
                                         </div>
-                                    </Link>
-                                ))}
-                            </div>
-                        ) : (
-                            <div className="text-sm text-gray-500 flex items-center gap-2 relative z-10 bg-gray-50 p-3 rounded-lg inline-flex border border-gray-100">
-                                <CheckCircle className="w-4 h-4 text-green-500" />
-                                Todos os bots estão ativos. Nenhum contato aguardando reativação.
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Tabs */}
-                    <div className="flex gap-2 mb-6 bg-white p-1.5 rounded-xl border border-gray-200 w-fit shadow-sm">
-                        {tabs.map((tab) => (
-                            <button
-                                key={tab.key}
-                                onClick={() => setActiveTab(tab.key)}
-                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${activeTab === tab.key
-                                    ? 'bg-blue-600 text-white shadow-sm'
-                                    : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
-                                    }`}
-                            >
-                                {tab.label}
-                                <span className={`px-2 py-0.5 rounded-full text-xs ${activeTab === tab.key
-                                    ? 'bg-white/20 text-white'
-                                    : 'bg-gray-100 text-gray-600'
-                                    }`}>
-                                    {contacts.filter(c => tab.statuses.includes(c.status)).length}
-                                </span>
-                            </button>
-                        ))}
-                    </div>
-
-                    {/* Contact List */}
-                    <div className="grid gap-4">
-                        {loading && contacts.length === 0 ? (
-                            <div className="flex justify-center py-12">
-                                <div className="w-8 h-8 rounded-full border-2 border-blue-600 border-t-transparent animate-spin" />
-                            </div>
-                        ) : (
-                            <AnimatePresence mode="popLayout">
-                                {filteredContacts.map((contact, index) => (
-                                    <motion.div
-                                        key={contact.phone}
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, x: -20 }}
-                                        transition={{ delay: index * 0.05 }}
-                                    >
-                                        <ContactCard contact={contact} />
-                                    </motion.div>
-                                ))}
-                            </AnimatePresence>
-                        )}
-
-                        {!loading && filteredContacts.length === 0 && (
-                            <div className="text-center py-16 bg-white rounded-2xl border border-dashed border-gray-200">
-                                <div className="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-3">
-                                    <Users className="w-6 h-6 text-gray-400" />
-                                </div>
-                                <h3 className="text-gray-900 font-medium mb-1">Nenhum contato encontrado</h3>
-                                <p className="text-sm text-gray-500">Não há contatos nesta categoria no momento.</p>
-                            </div>
-                        )}
-                    </div>
+                                        <div className="px-3 py-1 rounded-full bg-white text-xs font-bold text-red-600 border border-red-100 group-hover:bg-red-600 group-hover:text-white group-hover:border-red-600 transition-colors">
+                                            Reativar
+                                        </div>
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-sm text-gray-500 flex items-center gap-2 relative z-10 bg-gray-50 p-3 rounded-lg inline-flex border border-gray-100">
+                            <CheckCircle className="w-4 h-4 text-green-500" />
+                            Todos os bots estão ativos. Nenhum contato aguardando reativação.
+                        </div>
+                    )}
                 </div>
-            </main>
-        </div>
+
+                {/* Tabs */}
+                <div className="flex gap-2 mb-6 bg-white p-1.5 rounded-xl border border-gray-200 w-full md:w-fit shadow-sm overflow-x-auto">
+                    {tabs.map((tab) => (
+                        <button
+                            key={tab.key}
+                            onClick={() => setActiveTab(tab.key)}
+                            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === tab.key
+                                ? 'bg-blue-600 text-white shadow-sm'
+                                : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
+                                }`}
+                        >
+                            {tab.label}
+                            <span className={`px-2 py-0.5 rounded-full text-xs ${activeTab === tab.key
+                                ? 'bg-white/20 text-white'
+                                : 'bg-gray-100 text-gray-600'
+                                }`}>
+                                {contacts.filter(c => tab.statuses.includes(c.status)).length}
+                            </span>
+                        </button>
+                    ))}
+                </div>
+
+                {/* Contact List */}
+                <div className="grid gap-4">
+                    {loading && contacts.length === 0 ? (
+                        <div className="flex justify-center py-12">
+                            <div className="w-8 h-8 rounded-full border-2 border-blue-600 border-t-transparent animate-spin" />
+                        </div>
+                    ) : (
+                        <AnimatePresence mode="popLayout">
+                            {filteredContacts.map((contact, index) => (
+                                <motion.div
+                                    key={contact.phone}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, x: -20 }}
+                                    transition={{ delay: index * 0.05 }}
+                                >
+                                    <ContactCard contact={contact} />
+                                </motion.div>
+                            ))}
+                        </AnimatePresence>
+                    )}
+
+                    {!loading && filteredContacts.length === 0 && (
+                        <div className="text-center py-16 bg-white rounded-2xl border border-dashed border-gray-200">
+                            <div className="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <Users className="w-6 h-6 text-gray-400" />
+                            </div>
+                            <h3 className="text-gray-900 font-medium mb-1">Nenhum contato encontrado</h3>
+                            <p className="text-sm text-gray-500">Não há contatos nesta categoria no momento.</p>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </DashboardLayout>
     );
 }
 

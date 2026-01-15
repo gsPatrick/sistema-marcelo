@@ -37,13 +37,21 @@ const menuItems = [
     },
 ];
 
-export function Sidebar() {
+interface SidebarProps {
+    isOpen?: boolean;
+    onClose?: () => void;
+}
+
+export function Sidebar({ isOpen, onClose }: SidebarProps) {
     const pathname = usePathname();
 
     return (
-        <aside className="fixed left-0 top-0 h-screen w-64 bg-white border-r border-gray-200 flex flex-col z-50">
+        <aside className={cn(
+            "fixed inset-y-0 left-0 w-64 bg-white border-r border-gray-200 flex flex-col z-50 transition-transform duration-300 ease-in-out md:translate-x-0",
+            isOpen ? "translate-x-0" : "-translate-x-full"
+        )}>
             {/* Logo */}
-            <div className="p-6 border-b border-gray-100">
+            <div className="p-6 border-b border-gray-100 flex items-center justify-between">
                 <Link href="/" className="flex items-center gap-3 group">
                     <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center shadow-md shadow-blue-200">
                         <Stethoscope className="w-5 h-5 text-white" />
@@ -53,6 +61,10 @@ export function Sidebar() {
                         <p className="text-xs text-gray-500">Triagem Inteligente</p>
                     </div>
                 </Link>
+                {/* Close button for mobile */}
+                <button onClick={onClose} className="md:hidden p-1 text-gray-400 hover:text-gray-600">
+                    <LogOut className="w-5 h-5 rotate-180" /> {/* Reusing LogOut as back icon for now or just X */}
+                </button>
             </div>
 
             {/* Navigation */}
@@ -65,6 +77,7 @@ export function Sidebar() {
                         <Link
                             key={item.href}
                             href={item.href}
+                            onClick={onClose} // Close sidebar on mobile when link clicked
                             className={cn(
                                 'relative flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 group',
                                 isActive
