@@ -15,7 +15,7 @@ import {
 import '@xyflow/react/dist/style.css';
 
 import { MessageNode, QuestionNode, HandoverNode, DisqualifyNode } from './nodes';
-import { Toolbar } from './Toolbar';
+import Toolbar from './Toolbar';
 import { useFlowStore, CustomNodeData, NodeType } from '@/store/flowStore';
 import { getFlows, getFlow, saveFlow } from '@/lib/api';
 

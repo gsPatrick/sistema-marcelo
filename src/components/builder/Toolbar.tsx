@@ -1,6 +1,14 @@
-import { MessageSquareText, HelpCircle, UserCheck, XCircle } from 'lucide-react';
+import { MessageSquareText, HelpCircle, UserCheck, XCircle, Save, LayoutTemplate } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
+import { Loader2 } from 'lucide-react';
 
-export default function Toolbar() {
+interface ToolbarProps {
+    onSave: () => void;
+    isSaving: boolean;
+    onLayout: () => void;
+}
+
+export default function Toolbar({ onSave, isSaving, onLayout }: ToolbarProps) {
     const onDragStart = (event: React.DragEvent, nodeType: string) => {
         event.dataTransfer.setData('application/reactflow', nodeType);
         event.dataTransfer.effectAllowed = 'move';
@@ -8,6 +16,34 @@ export default function Toolbar() {
 
     return (
         <aside className="w-64 bg-white border-r border-gray-200 p-4 flex flex-col gap-4">
+            <div className="flex flex-col gap-2 mb-4">
+                <Button
+                    onClick={onSave}
+                    disabled={isSaving}
+                    className="w-full justify-center"
+                >
+                    {isSaving ? (
+                        <>
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            Salvando...
+                        </>
+                    ) : (
+                        <>
+                            <Save className="w-4 h-4 mr-2" />
+                            Salvar Fluxo
+                        </>
+                    )}
+                </Button>
+                <Button
+                    variant="outline"
+                    onClick={onLayout}
+                    className="w-full justify-center"
+                >
+                    <LayoutTemplate className="w-4 h-4 mr-2" />
+                    Organizar
+                </Button>
+            </div>
+
             <h2 className="font-bold text-lg text-gray-700">Ferramentas</h2>
             <p className="text-xs text-gray-500 mb-2">Arraste para o palco</p>
 

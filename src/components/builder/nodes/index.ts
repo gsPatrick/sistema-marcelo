@@ -3,6 +3,8 @@ import QuestionNode from './QuestionNode';
 import HandoverNode from './HandoverNode';
 import DisqualifyNode from './DisqualifyNode';
 
+export { MessageNode, QuestionNode, HandoverNode, DisqualifyNode };
+
 export const nodeTypes = {
     message: MessageNode,
     question: QuestionNode,
