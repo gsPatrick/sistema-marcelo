@@ -3,7 +3,7 @@
 import { cn } from '@/lib/utils';
 
 export interface BadgeProps {
-    variant?: 'default' | 'premium' | 'bot' | 'pending' | 'finished' | 'disqualified';
+    variant?: 'default' | 'premium' | 'bot' | 'pending' | 'finished' | 'disqualified' | 'success';
     children: React.ReactNode;
     className?: string;
 }
@@ -15,7 +15,8 @@ export function Badge({ variant = 'default', children, className }: BadgeProps) 
         bot: 'badge-bot',
         pending: 'badge-pending',
         finished: 'badge-finished',
-        disqualified: 'badge-disqualified'
+        disqualified: 'badge-disqualified',
+        success: 'bg-green-100 text-green-700 border-green-200'
     };
 
     return (

@@ -21,6 +21,11 @@ const menuItems = [
         icon: LayoutDashboard,
     },
     {
+        label: 'Fluxos (Builder)',
+        href: '/dashboard/flows',
+        icon: GitBranch,
+    },
+    {
         label: 'Contatos',
         href: '/contacts',
         icon: Users,

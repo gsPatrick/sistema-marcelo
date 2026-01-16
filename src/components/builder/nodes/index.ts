@@ -1,4 +1,11 @@
-export { MessageNode } from './MessageNode';
-export { QuestionNode } from './QuestionNode';
-export { HandoverNode } from './HandoverNode';
-export { DisqualifyNode } from './DisqualifyNode';
+import MessageNode from './MessageNode';
+import QuestionNode from './QuestionNode';
+import HandoverNode from './HandoverNode';
+import DisqualifyNode from './DisqualifyNode';
+
+export const nodeTypes = {
+    message: MessageNode,
+    question: QuestionNode,
+    handover: HandoverNode,
+    disqualify: DisqualifyNode
+};

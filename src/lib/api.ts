@@ -93,6 +93,22 @@ export async function activateFlow(id: string): Promise<Flow> {
     return response.data.data;
 }
 
+/**
+ * Duplica um fluxo
+ */
+export async function duplicateFlow(id: string): Promise<Flow> {
+    const response = await api.post(`/api/flows/${id}/duplicate`);
+    return response.data.data;
+}
+
+/**
+ * Recria o fluxo padrão (Seeder)
+ */
+export async function seedFlow(): Promise<Flow> {
+    const response = await api.post('/api/flows/seed');
+    return response.data.data;
+}
+
 // ============================================
 // CONTACTS API
 // ============================================
