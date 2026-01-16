@@ -2,8 +2,9 @@
 
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { ReactFlow, ReactFlowProvider, addEdge, useNodesState, useEdgesState, Controls, Background, Connection, Edge, Node, MarkerType, useReactFlow } from '@xyflow/react';
+import { ReactFlow, ReactFlowProvider, addEdge, useNodesState, useEdgesState, Controls, Background, Connection, Edge, Node, MarkerType, useReactFlow, Position } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
+import dagre from 'dagre';
 
 import { Save, ArrowLeft, Play } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -163,6 +164,40 @@ function FlowBuilder() {
         }
     };
 
+    const handleLayout = useCallback(() => {
+        const dagreGraph = new dagre.graphlib.Graph();
+        dagreGraph.setDefaultEdgeLabel(() => ({}));
+        dagreGraph.setGraph({ rankdir: 'LR' });
+
+        nodes.forEach((node) => {
+            dagreGraph.setNode(node.id, { width: 300, height: 150 });
+        });
+
+        edges.forEach((edge) => {
+            dagreGraph.setEdge(edge.source, edge.target);
+        });
+
+        dagre.layout(dagreGraph);
+
+        const layoutedNodes = nodes.map((node) => {
+            const nodeWithPosition = dagreGraph.node(node.id);
+            return {
+                ...node,
+                targetPosition: Position.Left,
+                sourcePosition: Position.Right,
+                position: {
+                    x: nodeWithPosition.x - 150,
+                    y: nodeWithPosition.y - 75,
+                },
+            };
+        });
+
+        setNodes(layoutedNodes);
+        setTimeout(() => {
+            reactFlowInstance.fitView({ padding: 0.2 });
+        }, 50);
+    }, [nodes, edges, setNodes, reactFlowInstance]);
+
     // Encontra o nó selecionado
     const selectedNode = nodes.find(n => n.id === selectedNodeId) || null;
 
@@ -211,7 +246,11 @@ function FlowBuilder() {
 
             {/* Main Editor Area */}
             <div className="flex flex-1 overflow-hidden">
-                <Toolbar />
+                <Toolbar
+                    onSave={handleSave}
+                    isSaving={isSaving}
+                    onLayout={handleLayout}
+                />
 
                 <div className="flex-1 h-full bg-gray-50 relative" onDrop={onDrop} onDragOver={onDragOver}>
                     <ReactFlow
