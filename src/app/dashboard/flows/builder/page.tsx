@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ReactFlow, ReactFlowProvider, addEdge, useNodesState, useEdgesState, Controls, Background, Connection, Edge, Node, MarkerType, useReactFlow, Position } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
@@ -281,7 +281,9 @@ function FlowBuilder() {
 export default function BuilderPage() {
     return (
         <ReactFlowProvider>
-            <FlowBuilder />
+            <Suspense fallback={<div className="flex items-center justify-center h-screen">Carregando editor...</div>}>
+                <FlowBuilder />
+            </Suspense>
         </ReactFlowProvider>
     );
 }
