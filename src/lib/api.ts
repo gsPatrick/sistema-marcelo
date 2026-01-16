@@ -29,6 +29,7 @@ export interface FlowNode {
     }>;
     next_node?: string;
     save_as?: string;
+    accept_free_text?: boolean;
     tags?: string[];
     title?: string;
     footer?: string;

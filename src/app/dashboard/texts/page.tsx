@@ -36,8 +36,18 @@ export default function SimpleTextsPage() {
                 setActiveFlow(fullFlow);
 
                 // Garante que nodes seja um objeto válido antes de clonar
-                const nodesData = fullFlow.nodes || {};
-                setNodes(JSON.parse(JSON.stringify(nodesData)));
+                const nodesData = JSON.parse(JSON.stringify(fullFlow.nodes || {}));
+
+                // AUTO-CORREÇÃO: Verificar nós de pergunta sem opções que precisam de free text
+                Object.keys(nodesData).forEach(key => {
+                    const node = nodesData[key];
+                    if (node.type === 'question' && (!node.options || node.options.length === 0)) {
+                        // Se é pergunta e não tem opções, DEVE aceitar texto livre
+                        node.accept_free_text = true;
+                    }
+                });
+
+                setNodes(nodesData);
 
                 // Ordenação Inteligente (BFS) para seguir o fluxo da conversa
                 const orderedKeys = orderNodesByFlow(nodesData);

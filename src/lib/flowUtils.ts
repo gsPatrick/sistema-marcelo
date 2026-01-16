@@ -58,6 +58,7 @@ export function backendToReactFlow(nodes: Record<string, FlowNode>): { nodes: No
                 options: node.options,
                 tags: node.tags,
                 save_as: node.save_as,
+                accept_free_text: node.accept_free_text,
                 label: node.content
             }
         });
@@ -104,7 +105,8 @@ export function reactFlowToBackend(nodes: Node[], edges: Edge[]): Record<string,
             // Opcionais
             options: node.data.options as any,
             save_as: node.data.save_as as string,
-            tags: node.data.tags as string[]
+            tags: node.data.tags as string[],
+            accept_free_text: node.data.accept_free_text as boolean
         };
 
         // Encontrar conexões (edges) saindo deste nó
