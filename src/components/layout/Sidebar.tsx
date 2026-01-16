@@ -21,9 +21,9 @@ const menuItems = [
         icon: LayoutDashboard,
     },
     {
-        label: 'Fluxos (Builder)',
-        href: '/dashboard/flows',
-        icon: GitBranch,
+        label: 'Editor de Textos',
+        href: '/dashboard/texts',
+        icon: GitBranch, // Usando ícone de Branch para Editor de Textos, ou mante-lo
     },
     {
         label: 'Contatos',

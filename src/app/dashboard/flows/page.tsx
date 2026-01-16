@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Plus, Play, Copy, Trash2, Edit } from 'lucide-react';
+import { Plus, Play, Copy, Trash2, Edit, ArrowLeft } from 'lucide-react';
 import { getFlows, deleteFlow, activateFlow, duplicateFlow, seedFlow, Flow } from '@/lib/api';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -72,9 +72,14 @@ export default function FlowsPage() {
     return (
         <div className="p-6 space-y-6">
             <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold text-gray-900">Fluxos de Conversa</h1>
-                    <p className="text-gray-500">Gerencie os fluxos de automação do seu bot.</p>
+                <div className="flex items-center gap-4">
+                    <Button variant="ghost" size="icon" onClick={() => router.push('/dashboard')}>
+                        <ArrowLeft className="w-6 h-6" />
+                    </Button>
+                    <div>
+                        <h1 className="text-3xl font-bold text-gray-900">Fluxos de Conversa</h1>
+                        <p className="text-gray-500">Gerencie os fluxos de automação do seu bot.</p>
+                    </div>
                 </div>
                 <Button onClick={() => router.push('/dashboard/flows/builder')}>
                     <Plus className="w-4 h-4 mr-2" />
