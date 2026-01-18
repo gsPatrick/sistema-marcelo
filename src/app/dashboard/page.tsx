@@ -14,7 +14,7 @@ type TabKey = 'pending' | 'bot' | 'finished';
 
 const tabs: { key: TabKey; label: string; statuses: string[] }[] = [
     { key: 'pending', label: 'Aguardando', statuses: ['PENDING'] },
-    { key: 'bot', label: 'Em Triagem', statuses: ['BOT'] },
+    { key: 'bot', label: 'Em Atendimento', statuses: ['BOT', 'HUMAN'] }, // Inclui HUMAN aqui
     { key: 'finished', label: 'Finalizados', statuses: ['FINISHED', 'DISQUALIFIED'] },
 ];
 
